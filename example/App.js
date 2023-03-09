@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import {Alert, BackHandler, Button, Platform} from 'react-native';
+import {Alert, BackHandler, Button, Platform, View} from 'react-native';
 
-import {DocumentView, RNPdftron} from 'react-native-pdftron';
+import {Config, DocumentView, RNPdftron} from 'react-native-pdftron';
 
 export default class App extends Component {
   constructor(props) {
@@ -9,6 +9,8 @@ export default class App extends Component {
 
     RNPdftron.initialize('Insert commercial license key here after purchase');
     RNPdftron.enableJavaScript(true);
+
+    this.documentRef = React.createRef(DocumentView);
   }
 
   onLeadingNavButtonPressed = () => {
@@ -25,17 +27,27 @@ export default class App extends Component {
     }
   };
 
+  onPressFreeText = () => {
+    this.documentRef.current.setToolMode(Config.Tools.annotationCreateFreeText);
+  };
+
   render() {
     const path =
-      'https://pdftron.s3.amazonaws.com/downloads/pl/PDFTRON_mobile_about.pdf';
+      'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
 
     return (
       <>
-        <Button title="Sign a signature" onPress={this.sign} />
+        <View style={{marginTop: 45}}>
+          <Button title="Free Text" onPress={this.onPressFreeText} />
+        </View>
         <DocumentView
           ref={this.documentRef}
           document={path}
           showLeadingNavButton={true}
+          hideToolbarsOnTap={false}
+          hideTopAppNavBar={true}
+          bottomToolbarEnabled={false}
+          hideTopToolbars={true}
           leadingNavButtonIcon={
             Platform.OS === 'ios'
               ? 'ic_close_black_24px.png'
